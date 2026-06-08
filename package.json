@@ -1,0 +1,27 @@
+{
+  "name": "shopify-express-mongoose-boilerplate",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Secure runtime foundation for Shopify Express Mongoose Boilerplate",
+  "main": "server.js",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@shopify/shopify-api": "^11.0.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.4.1"
+  },
+  "devDependencies": {
+    "fast-check": "^3.19.0",
+    "nock": "^14.0.15",
+    "supertest": "^7.0.0",
+    "vitest": "^4.1.8"
+  }
+}
