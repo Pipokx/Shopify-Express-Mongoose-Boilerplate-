@@ -32,7 +32,7 @@ Building a successful Shopify application requires solving deep structural chall
 - **Framework**: Express
 - **Database**: MongoDB & Mongoose
 - **Shopify Integration**: `@shopify/shopify-api`
-- **Test Runner**: Vitest (34/34 Passing Units, Property-Based, & Integration Tests)
+- **Test Runner**: Vitest (39/39 Passing Units, Property-Based, & Integration Tests)
 
 ---
 

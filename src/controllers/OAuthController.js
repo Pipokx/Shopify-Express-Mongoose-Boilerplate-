@@ -1,6 +1,20 @@
 import { getShopify } from '../config/shopify.js';
 
 /**
+ * Escapes HTML special characters to prevent XSS injection.
+ * @param {string} str - The string to escape.
+ * @returns {string} The escaped string.
+ */
+function escapeHtml(str) {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/**
  * Initiates the Shopify OAuth installation flow.
  * @param {import('express').Request} req - Express request
  * @param {import('express').Response} res - Express response
@@ -159,7 +173,7 @@ export async function handleRoot(req, res) {
           <body>
             <div class="card">
               <h1>Connexion réussie ! 🎉</h1>
-              <p>Le backend de votre application Shopify fonctionne correctement et est connecté à la boutique <strong>${shop}</strong>.</p>
+              <p>Le backend de votre application Shopify fonctionne correctement et est connecté à la boutique <strong>${escapeHtml(shop)}</strong>.</p>
               <p>Vous pouvez maintenant commencer à développer vos routes d'API.</p>
             </div>
           </body>
