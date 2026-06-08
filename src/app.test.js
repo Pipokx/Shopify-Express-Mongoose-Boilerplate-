@@ -12,6 +12,9 @@ vi.mock('./controllers/OAuthController.js', () => ({
   },
   handleCallback: (req, res) => {
     res.send('callback');
+  },
+  handleRoot: (req, res) => {
+    res.send('root');
   }
 }));
 

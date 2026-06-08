@@ -1,8 +1,8 @@
 # Shopify Express Mongoose Boilerplate
 
-A production-ready, backend engine built with **Node.js (v22+)**, **Express**, and **Mongoose**. 
+A production-ready, backend engine built with **Node.js (v22+)**, **Express**, and **Mongoose**.
 
-This boilerplate is engineered as a **foundational pillar**. By abstracting and solving the most complex, error-prone requirements of the Shopify ecosystem, it serves as the ultimate launchpad to build *any* custom Shopify application with minimal architectural debt.
+This boilerplate is engineered as a **foundational pillar**. By abstracting and solving the most complex, error-prone requirements of the Shopify ecosystem, it serves as the ultimate launchpad to build _any_ custom Shopify application with minimal architectural debt.
 
 ---
 
@@ -10,29 +10,29 @@ This boilerplate is engineered as a **foundational pillar**. By abstracting and 
 
 Building a successful Shopify application requires solving deep structural challenges before writing a single line of business logic. This boilerplate eliminates weeks of repetitive setup and security auditing by delivering:
 
-*   **Universal Scalability**: The decoupling of the core runtime initialization (`Env -> DB -> SDK -> App`) ensures that whether you are building a lightweight merchant tool or a heavy-duty automation SaaS, the infrastructure handles the load seamlessly.
-*   **Plug-and-Play Architecture**: Features clean entrypoints and explicit storage contracts allowing you to instantly hook in your specific business logic.
-*   **Bulletproof Compliance by Default**: Implements strict security mechanisms that guarantee your app will pass Shopify's rigorous App Store review metrics regarding session handling and request verification.
+- **Universal Scalability**: The decoupling of the core runtime initialization (`Env -> DB -> SDK -> App`) ensures that whether you are building a lightweight merchant tool or a heavy-duty automation SaaS, the infrastructure handles the load seamlessly.
+- **Plug-and-Play Architecture**: Features clean entrypoints and explicit storage contracts allowing you to instantly hook in your specific business logic.
+- **Bulletproof Compliance by Default**: Implements strict security mechanisms that guarantee your app will pass Shopify's rigorous App Store review metrics regarding session handling and request verification.
 
 ---
 
 ## 🚀 Key Features
 
-*   **Runtime Environment Validation**: Pre-flight checks guarantee all required credentials are present before bootstrapping, preventing catastrophic runtime crashes in production.
-*   **Custom Session Storage Layer**: A tailored Mongoose schema with optimized unique indexes bridges the gap between `@shopify/shopify-api` and MongoDB, ensuring flawless multi-store multi-tenancy.
-*   **Cryptographic HMAC Middleware**: Protects your server against spoofing attacks using timing-safe comparisons (`crypto.timingSafeEqual`) and complex array-based query string parsing.
-*   **Industrial OAuth Controller**: Handles seamless merchant installation loops, dynamic access token exchanges, offline session persistence, and state-cookie mismatch routing.
-*   **Graceful Lifecycle Management**: Clean system startup sequence paired with reliable shutdown hooks for zero-downtime deployments.
+- **Runtime Environment Validation**: Pre-flight checks guarantee all required credentials are present before bootstrapping, preventing catastrophic runtime crashes in production.
+- **Custom Session Storage Layer**: A tailored Mongoose schema with optimized unique indexes bridges the gap between `@shopify/shopify-api` and MongoDB, ensuring flawless multi-store multi-tenancy.
+- **Cryptographic HMAC Middleware**: Protects your server against spoofing attacks using timing-safe comparisons (`crypto.timingSafeEqual`) and complex array-based query string parsing.
+- **Industrial OAuth Controller**: Handles seamless merchant installation loops, dynamic access token exchanges, offline session persistence, and state-cookie mismatch routing.
+- **Graceful Lifecycle Management**: Clean system startup sequence paired with reliable shutdown hooks for zero-downtime deployments.
 
 ---
 
 ## 🛠️ Tech Stack & Prerequisites
 
-*   **Runtime**: Node.js `>= 22.0.0` (Native ES Modules)
-*   **Framework**: Express
-*   **Database**: MongoDB & Mongoose
-*   **Shopify Integration**: `@shopify/shopify-api`
-*   **Test Runner**: Vitest (34/34 Passing Units, Property-Based, & Integration Tests)
+- **Runtime**: Node.js `>= 22.0.0` (Native ES Modules)
+- **Framework**: Express
+- **Database**: MongoDB & Mongoose
+- **Shopify Integration**: `@shopify/shopify-api`
+- **Test Runner**: Vitest (34/34 Passing Units, Property-Based, & Integration Tests)
 
 ---
 
@@ -56,33 +56,38 @@ Building a successful Shopify application requires solving deep structural chall
 ## ⚙️ Installation & Setup Guide
 
 ### 1. Shopify Partner Portal Setup
+
 1. Log in to the Shopify Partners Portal.
-2. Navigate to **Apps** > **Create App** > **Create app manually**.
-3. Under **App Configuration**, copy the **Client ID** (`SHOPIFY_API_KEY`) and **Client Secret** (`SHOPIFY_API_SECRET`).
-4. In the Partners sidebar, click **Stores** > **Add store** to create a Development Store (choose the non-transferable development store option).
+2. Navigate to the Dev dashboard. Click on **Create Store** and select the **Development Store** option to set up a new store for testing.
+3. Once the store is built, under **Settings > Apps**, click **Develop apps > Build apps in Dev Dashboard**.
+4. Create your custom app from the Dev Dashboard — you'll find the Client ID (`SHOPIFY_API_KEY`) and Client Secret (`SHOPIFY_API_SECRET`) there.
 
 ### 2. Establish Local Secure Tunneling
+
 Shopify forces all authorization redirects through secure (https) connections. Expose your local environment port via ngrok:
 
 ```bash
 ngrok http 3000
 ```
+
 Copy the forwarding HTTPS URL generated
 
-### 3. Update App Credentials Dashboard 
+### 3. Update App Credentials Dashboard
+
 Return to your app setup interface within the Shopify Partners Dashboard and update the target entrypoints:
 
-* **App URL**: `https://<your-ngrok-subdomain>.ngrok-free.app`
-* **Allowed Redirection URL**: `https://<your-ngrok-subdomain>.ngrok-free.app/api/auth/callback`
+- **App URL**: `https://<your-ngrok-subdomain>.ngrok-free.app`
+- **Allowed Redirection URL**: `https://<your-ngrok-subdomain>.ngrok-free.app/api/auth/callback`
 
-### 4. Configure Local Environment State 
-Initialize your local configuration file at the root level of your project directory: 
+### 4. Configure Local Environment State
+
+Initialize your local configuration file at the root level of your project directory:
 
 ```bash
 cp .env.example .env
 ```
 
-Populate the newly created .env file using your real developer variables : 
+Populate the newly created .env file using your real developer variables :
 
 ```Ini, TOML
 SHOPIFY_API_KEY=your_client_id_here
@@ -95,17 +100,17 @@ APP_SLUG=your-app-handle-from-shopify-url
 ```
 
 ### 5. Launch the Server Stack
+
 Ensure your local MongoDB instance is fully running (via native processes, MongoDB Compass, or Docker containers). Install node modules and start up the server engine:
 
 ```bash
 npm install
 npm start
 ```
+
 Upon successful bootstrap, your console will print verification logs confirming initialization sequences:
 
 ```Plaintext
 MongoDB connected
 Server listening on port 3000
 ```
-
-

@@ -1,8 +1,11 @@
 import express from 'express';
-import { beginAuth, handleCallback } from '../controllers/OAuthController.js';
+import { beginAuth, handleCallback, handleRoot } from '../controllers/OAuthController.js';
 import { validateHmac } from '../middleware/hmac.js';
 
 const router = express.Router();
+
+// Route to handle initial app load from Shopify
+router.get('/', handleRoot);
 
 // Route to initiate OAuth flow, protected by HMAC validation
 router.get('/api/auth', validateHmac, beginAuth);
