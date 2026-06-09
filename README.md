@@ -2,7 +2,7 @@
 
 A production-ready, backend engine built with **Node.js (v22+)**, **Express**, and **Mongoose**.
 
-This boilerplate is engineered as a **foundational pillar**. It serves as the ultimate launchpad to build _any_ custom Shopify application. 
+This boilerplate is engineered as a **foundational pillar**. It serves as the launchpad to build _any_ custom Shopify application. 
 
 ---
 
