@@ -4,7 +4,7 @@
 
 This document describes the functional and technical requirements for the **shopify-express-mongoose-boilerplate** — a reusable foundation for embedded Shopify applications built with Express and MongoDB. This boilerplate provides: Express server initialization, `@shopify/shopify-api` SDK configuration, OAuth session persistence via MongoDB, and HMAC request validation.
 
-The goal is to produce a generic, secure base that complies with Shopify platform requirements and can be forked for any specific Shopify app (StockRefill, Omnisync, etc.) by simply configuring environment variables.
+The goal is to produce a generic, secure base that complies with Shopify platform requirements and can be forked for any specific Shopify app by simply configuring environment variables.
 
 **Out of scope for this boilerplate:** frontend/UI, app-specific business logic, cron jobs, Billing API, dashboards, and webhooks (including GDPR/privacy webhooks and app/uninstalled webhook — these will be added per-app).
 
