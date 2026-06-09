@@ -2,17 +2,17 @@
 
 A production-ready, backend engine built with **Node.js (v22+)**, **Express**, and **Mongoose**.
 
-This boilerplate is engineered as a **foundational pillar**. By abstracting and solving the most complex, error-prone requirements of the Shopify ecosystem, it serves as the ultimate launchpad to build _any_ custom Shopify application with minimal architectural debt.
+This boilerplate is engineered as a **foundational pillar**. It serves as the ultimate launchpad to build _any_ custom Shopify application. 
 
 ---
 
-## 🎯 Why This is the Ultimate Foundational Pillar
+## 🎯 Purpose of this engine  
 
 Building a successful Shopify application requires solving deep structural challenges before writing a single line of business logic. This boilerplate eliminates weeks of repetitive setup and security auditing by delivering:
 
-- **Universal Scalability**: The decoupling of the core runtime initialization (`Env -> DB -> SDK -> App`) ensures that whether you are building a lightweight merchant tool or a heavy-duty automation SaaS, the infrastructure handles the load seamlessly.
+- **Scalability**: The decoupling of the core runtime initialization (`Env -> DB -> SDK -> App`) ensures that whether you are building a lightweight merchant tool or a heavy-duty automation SaaS, the infrastructure handles the load seamlessly.
 - **Plug-and-Play Architecture**: Features clean entrypoints and explicit storage contracts allowing you to instantly hook in your specific business logic.
-- **Bulletproof Compliance by Default**: Implements strict security mechanisms that guarantee your app will pass Shopify's rigorous App Store review metrics regarding session handling and request verification.
+- **Bulletproof Compliance**: Implements strict security mechanisms that guarantee your app will pass Shopify's rigorous App Store review metrics regarding session handling and request verification.
 
 ---
 
