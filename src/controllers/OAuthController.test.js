@@ -4,6 +4,7 @@ import { beginAuth, handleCallback, handleRoot } from './OAuthController.js';
 import { initShopify } from '../config/shopify.js';
 import { CustomSessionStorage } from '../storage/CustomSessionStorage.js';
 import { SessionModel } from '../models/Session.js';
+import { CookieNotFound, InvalidOAuthError } from '@shopify/shopify-api';
 
 // Mock the Mongoose model
 vi.mock('../models/Session.js', () => {
@@ -183,12 +184,6 @@ describe('controllers/OAuthController', () => {
     );
 
     // Mock callback to reject with CookieNotFound
-    class CookieNotFound extends Error {
-      constructor(message) {
-        super(message);
-        this.name = 'CookieNotFound';
-      }
-    }
     vi.spyOn(shopify.auth, 'callback').mockRejectedValueOnce(new CookieNotFound('Could not find session cookie'));
 
     const req = {
@@ -221,12 +216,6 @@ describe('controllers/OAuthController', () => {
       new CustomSessionStorage()
     );
 
-    class InvalidOAuthError extends Error {
-      constructor(message) {
-        super(message);
-        this.name = 'InvalidOAuthError';
-      }
-    }
     vi.spyOn(shopify.auth, 'callback').mockRejectedValueOnce(new InvalidOAuthError('Validation failed'));
 
     const req = {

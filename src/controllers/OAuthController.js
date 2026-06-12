@@ -1,4 +1,5 @@
 import { getShopify } from '../config/shopify.js';
+import { CookieNotFound, InvalidOAuthError } from '@shopify/shopify-api';
 
 /**
  * Escapes HTML special characters to prevent XSS injection.
@@ -64,11 +65,8 @@ export async function handleCallback(req, res) {
 
     return res.redirect(`https://${session.shop}/admin/apps/${appSlug}`);
   } catch (error) {
-    const errorName = error.constructor.name;
-    const errorMessage = error.message || '';
-
     // Check for CookieNotFound or missing session cookie issues
-    if (errorName === 'CookieNotFound' || errorMessage.includes('CookieNotFound')) {
+    if (error instanceof CookieNotFound) {
       const shop = req.query.shop;
       if (shop && /^[a-z0-9-]+\.myshopify\.com$/i.test(shop)) {
         const queryString = new URLSearchParams(req.query).toString();
@@ -91,17 +89,13 @@ export async function handleCallback(req, res) {
       }
     }
 
-    // Check for OAuth validation failures (like InvalidOAuthError)
-    if (
-      errorName === 'InvalidOAuthError' ||
-      errorMessage.includes('InvalidOAuthError') ||
-      errorMessage.includes('validation')
-    ) {
-      return res.status(403).json({ error: `OAuth callback validation failed: ${errorMessage}` });
+    // Check for OAuth validation failures
+    if (error instanceof InvalidOAuthError) {
+      return res.status(403).json({ error: `OAuth callback validation failed: ${error.message}` });
     }
 
     // Generic token exchange/other failure
-    return res.status(500).json({ error: `Token exchange failed: ${errorMessage}` });
+    return res.status(500).json({ error: `Token exchange failed: ${error.message || ''}` });
   }
 }
 

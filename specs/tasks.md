@@ -16,8 +16,8 @@ Implement the secure runtime foundation for the Shopify Express Mongoose Boilerp
   - Configure Vitest in `package.json` (test runner, coverage settings)
   - _Requirements: 1.5, 8.1, 8.2, 8.3_
 
-- [ ] 2. Environment variable validation (`src/config/env.js`)
-  - [ ] 2.1 Implement `validateAndLoadEnv()` in `src/config/env.js`
+- [/] 2. Environment variable validation (`src/config/env.js`)
+  - [x] 2.1 Implement `validateAndLoadEnv()` in `src/config/env.js`
     - Read `process.env` for all seven required keys: `SHOPIFY_API_KEY`, `SHOPIFY_API_SECRET`, `SHOPIFY_SCOPES`, `HOST`, `PORT`, `MONGODB_URI`, `APP_SLUG`
     - Throw a descriptive `Error` naming the first missing variable if any key is absent
     - Return a frozen config object `{ apiKey, apiSecretKey, scopes, host, port, mongodbUri, appSlug }` when all keys are present
@@ -44,8 +44,8 @@ Implement the secure runtime foundation for the Shopify Express Mongoose Boilerp
     - Test: `MONGODB_URI` present but malformed → throws with "MONGODB_URI" in message
     - _Requirements: 1.1, 1.2, 1.3, 1.4_
 
-- [ ] 3. MongoDB connection helpers (`src/db/connection.js`)
-  - [ ] 3.1 Implement `connectDB(uri)` and `disconnectDB()` in `src/db/connection.js`
+- [x] 3. MongoDB connection helpers (`src/db/connection.js`)
+  - [x] 3.1 Implement `connectDB(uri)` and `disconnectDB()` in `src/db/connection.js`
     - `connectDB(uri)` calls `mongoose.connect(uri)` and resolves on success; rejects with the original error on failure
     - `disconnectDB()` calls `mongoose.disconnect()`
     - _Requirements: 4.1, 4.2, 4.3_
@@ -55,8 +55,8 @@ Implement the secure runtime foundation for the Shopify Express Mongoose Boilerp
     - Test: `connectDB` with a failing connection rejects with the error (mock `mongoose.connect` to reject)
     - _Requirements: 4.2_
 
-- [ ] 4. Session Mongoose model (`src/models/Session.js`)
-  - [ ] 4.1 Define `SessionSchema` and export `SessionModel` in `src/models/Session.js`
+- [/] 4. Session Mongoose model (`src/models/Session.js`)
+  - [x] 4.1 Define `SessionSchema` and export `SessionModel` in `src/models/Session.js`
     - Include all required fields: `id` (String, unique, required), `shop` (String, required, index), `state` (String), `isOnline` (Boolean, default false), `scope` (String), `expires` (Date), `accessToken` (String), `onlineAccessInfo` (Mixed)
     - Enable `{ timestamps: true }` for automatic `createdAt`/`updatedAt`
     - _Requirements: 3.1, 3.6_
