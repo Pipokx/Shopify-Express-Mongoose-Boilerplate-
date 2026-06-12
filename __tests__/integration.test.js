@@ -48,6 +48,7 @@ describe('OAuth Integration Flow', () => {
     process.env.PORT = '3000';
     process.env.MONGODB_URI = 'mongodb://localhost:27017/db';
     process.env.APP_SLUG = 'test-app';
+    process.env.ENCRYPTION_KEY = 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6a7b8c9d0e1f2a3b4c5d6a7b8c9d0e1f2';
 
     const config = {
       apiKey: 'test_key',

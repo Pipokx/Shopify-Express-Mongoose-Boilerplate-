@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import * as fc from 'fast-check';
 import { Session } from '@shopify/shopify-api';
 import { CustomSessionStorage } from './CustomSessionStorage.js';
@@ -30,11 +30,18 @@ vi.mock('../models/Session.js', () => {
 
 describe('storage/CustomSessionStorage', () => {
   let storage;
+  let originalEnv;
 
   beforeEach(() => {
+    originalEnv = { ...process.env };
+    process.env.ENCRYPTION_KEY = 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6a7b8c9d0e1f2a3b4c5d6a7b8c9d0e1f2'; // 64 hex chars
     storage = new CustomSessionStorage();
     SessionModel.__clearMockDb();
     vi.clearAllMocks();
+  });
+
+  afterEach(() => {
+    process.env = originalEnv;
   });
 
   // Feature: shopify-express-mongoose-boilerplate, Property 3: Session storage round-trip
@@ -162,5 +169,63 @@ describe('storage/CustomSessionStorage', () => {
     SessionModel.deleteOne.mockRejectedValueOnce(new Error('Write concern error'));
 
     await expect(storage.deleteSession('some-id')).rejects.toThrow('Write concern error');
+  });
+
+  // Encryption integration tests
+  it('should write an encrypted accessToken to the database', async () => {
+    const rawToken = 'shp_access_token_123';
+    const session = new Session({
+      id: 'enc-test-session',
+      shop: 'enc-test.myshopify.com',
+      state: 'state',
+      isOnline: false,
+      accessToken: rawToken
+    });
+
+    await storage.storeSession(session);
+
+    // Verify what was actually passed to the mock Mongoose model
+    const mockCalls = SessionModel.findOneAndUpdate.mock.calls;
+    expect(mockCalls.length).toBe(1);
+    const sessionDataArg = mockCalls[0][1];
+    
+    expect(sessionDataArg.accessToken).toBeDefined();
+    expect(sessionDataArg.accessToken).not.toBe(rawToken);
+    expect(sessionDataArg.accessToken).toContain(':'); // Contains IV and authTag delimiters
+  });
+
+  it('should decrypt accessToken when loading from the database', async () => {
+    const rawToken = 'shp_access_token_456';
+    const session = new Session({
+      id: 'dec-test-session',
+      shop: 'dec-test.myshopify.com',
+      state: 'state',
+      isOnline: false,
+      accessToken: rawToken
+    });
+
+    await storage.storeSession(session);
+    const loadedSession = await storage.loadSession('dec-test-session');
+
+    expect(loadedSession.accessToken).toBe(rawToken);
+  });
+
+  it('should leave null or undefined accessToken unchanged', async () => {
+    const session = new Session({
+      id: 'null-test-session',
+      shop: 'null-test.myshopify.com',
+      state: 'state',
+      isOnline: false,
+      accessToken: undefined
+    });
+
+    await storage.storeSession(session);
+    
+    const mockCalls = SessionModel.findOneAndUpdate.mock.calls;
+    const sessionDataArg = mockCalls[0][1];
+    expect(sessionDataArg.accessToken).toBeUndefined();
+
+    const loadedSession = await storage.loadSession('null-test-session');
+    expect(loadedSession.accessToken).toBeUndefined();
   });
 });

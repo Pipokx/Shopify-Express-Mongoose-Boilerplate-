@@ -8,6 +8,7 @@ const REQUIRED_VARS = [
   "PORT",
   "MONGODB_URI",
   "APP_SLUG",
+  "ENCRYPTION_KEY",
 ];
 
 /**
@@ -19,18 +20,17 @@ const REQUIRED_VARS = [
  *   host: string,
  *   port: string,
  *   mongodbUri: string,
- *   appSlug: string
+ *   appSlug: string,
+ *   encryptionKey: string
  * }>} Frozen configuration object
- * @throws {Error} If any required variables are missing or if MONGODB_URI is malformed.
+ * @throws {Error} If any required variables are missing, if MONGODB_URI is malformed,
+ *                 or if ENCRYPTION_KEY is not exactly 32 characters long.
  */
 export function validateAndLoadEnv() {
   const missing = [];
 
   for (const varName of REQUIRED_VARS) {
     const value = process.env[varName];
-    // A variable is missing if it is undefined.
-    // For variables other than MONGODB_URI, an empty string is also considered missing.
-    // MONGODB_URI='' is considered present but malformed.
     if (value === undefined || (varName !== "MONGODB_URI" && value === "")) {
       missing.push(varName);
     }
@@ -50,15 +50,26 @@ export function validateAndLoadEnv() {
     );
   }
 
+  const host = process.env.HOST;
+
+  const encryptionKey = process.env.ENCRYPTION_KEY;
+  if (!/^[0-9a-fA-F]{64}$/.test(encryptionKey)) {
+    throw new Error(
+      "ENCRYPTION_KEY is malformed. It must be a 64-character hex string (representing a 32-byte key).",
+    );
+  }
+
   const config = {
     apiKey: process.env.SHOPIFY_API_KEY,
     apiSecretKey: process.env.SHOPIFY_API_SECRET,
     scopes: process.env.SHOPIFY_SCOPES,
-    host: process.env.HOST,
+    host: host,
     port: process.env.PORT,
     mongodbUri: mongodbUri,
     appSlug: process.env.APP_SLUG,
+    encryptionKey: encryptionKey,
   };
 
   return Object.freeze(config);
 }
+

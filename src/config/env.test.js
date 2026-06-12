@@ -9,7 +9,8 @@ const REQUIRED_VARS = [
   'HOST',
   'PORT',
   'MONGODB_URI',
-  'APP_SLUG'
+  'APP_SLUG',
+  'ENCRYPTION_KEY'
 ];
 
 describe('validateAndLoadEnv', () => {
@@ -38,6 +39,7 @@ describe('validateAndLoadEnv', () => {
     process.env.PORT = '3000';
     process.env.MONGODB_URI = 'mongodb://localhost:27017/db';
     process.env.APP_SLUG = 'test-app';
+    process.env.ENCRYPTION_KEY = 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6a7b8c9d0e1f2a3b4c5d6a7b8c9d0e1f2'; // 64 hex chars
   }
 
   it('should return a frozen config object when all required variables are present and valid', () => {
@@ -52,7 +54,8 @@ describe('validateAndLoadEnv', () => {
       host: 'https://test.myshopify.com',
       port: '3000',
       mongodbUri: 'mongodb://localhost:27017/db',
-      appSlug: 'test-app'
+      appSlug: 'test-app',
+      encryptionKey: 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6a7b8c9d0e1f2a3b4c5d6a7b8c9d0e1f2'
     });
 
     expect(Object.isFrozen(config)).toBe(true);
@@ -111,6 +114,18 @@ describe('validateAndLoadEnv', () => {
       ),
       { numRuns: 100 }
     );
+  });
+
+  it('should fail fast if ENCRYPTION_KEY is not a valid 64-character hex string', () => {
+    setValidEnv();
+    
+    // Test shorter key
+    process.env.ENCRYPTION_KEY = 'short_key';
+    expect(() => validateAndLoadEnv()).toThrow(/ENCRYPTION_KEY.*malformed/);
+
+    // Test non-hex key of correct length
+    process.env.ENCRYPTION_KEY = 'zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz';
+    expect(() => validateAndLoadEnv()).toThrow(/ENCRYPTION_KEY.*malformed/);
   });
 
   // Additional unit tests

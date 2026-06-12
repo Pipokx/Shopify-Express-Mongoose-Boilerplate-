@@ -1,7 +1,17 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { SessionModel } from './Session.js';
 
 describe('models/Session', () => {
+  let originalEnv;
+
+  beforeEach(() => {
+    originalEnv = { ...process.env };
+  });
+
+  afterEach(() => {
+    process.env = originalEnv;
+  });
+
   it('should have the correct schema path configurations', () => {
     const paths = SessionModel.schema.paths;
 
@@ -27,6 +37,7 @@ describe('models/Session', () => {
 
     // Check expires field
     expect(paths.expires.instance).toBe('Date');
+    expect(paths.expires.options.index.expires).toBe(0);
 
     // Check accessToken field
     expect(paths.accessToken.instance).toBe('String');
@@ -38,4 +49,6 @@ describe('models/Session', () => {
   it('should enable timestamps on the schema', () => {
     expect(SessionModel.schema.options.timestamps).toBe(true);
   });
+
 });
+

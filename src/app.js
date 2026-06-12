@@ -1,4 +1,5 @@
 import express from 'express';
+import { rateLimit } from 'express-rate-limit';
 import authRouter from './routes/auth.js';
 
 /**
@@ -10,8 +11,21 @@ export function createApp(shopify) {
   const app = express();
 
   // Middleware for parsing requests
-  app.use(express.json());
+  app.use(express.json({
+    verify: (req, res, buf, encoding) => {
+      if (buf && buf.length > 0) req.rawBody = buf;
+    }
+  }));
   app.use(express.urlencoded({ extended: true }));
+
+  // Rate Limiting
+  const limiter = rateLimit({
+    windowMs: 60_000,
+    max: 30,
+    standardHeaders: true,
+    legacyHeaders: false
+  });
+  app.use(['/', '/api/auth'], limiter);
 
   // Mount the Auth Router
   app.use('/', authRouter);

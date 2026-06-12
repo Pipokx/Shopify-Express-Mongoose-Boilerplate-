@@ -23,7 +23,8 @@ const SessionSchema = new mongoose.Schema(
       type: String
     },
     expires: {
-      type: Date
+      type: Date,
+      index: { expires: 0 }
     },
     accessToken: {
       type: String
@@ -33,8 +34,11 @@ const SessionSchema = new mongoose.Schema(
     }
   },
   {
-    timestamps: true
+    timestamps: true,
+    toJSON: { getters: true },
+    toObject: { getters: true }
   }
 );
 
 export const SessionModel = mongoose.model('Session', SessionSchema);
+

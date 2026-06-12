@@ -4,6 +4,7 @@ import { beginAuth, handleCallback, handleRoot } from './OAuthController.js';
 import { initShopify } from '../config/shopify.js';
 import { CustomSessionStorage } from '../storage/CustomSessionStorage.js';
 import { SessionModel } from '../models/Session.js';
+import { CookieNotFound, InvalidOAuthError } from '@shopify/shopify-api';
 
 // Mock the Mongoose model
 vi.mock('../models/Session.js', () => {
@@ -39,6 +40,7 @@ describe('controllers/OAuthController', () => {
     process.env.SHOPIFY_SCOPES = 'read_products';
     process.env.HOST = 'https://test-app.myshopify.com';
     process.env.APP_SLUG = 'test-app';
+    process.env.ENCRYPTION_KEY = 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6a7b8c9d0e1f2a3b4c5d6a7b8c9d0e1f2';
 
     const config = {
       apiKey: 'test_key',
@@ -183,12 +185,6 @@ describe('controllers/OAuthController', () => {
     );
 
     // Mock callback to reject with CookieNotFound
-    class CookieNotFound extends Error {
-      constructor(message) {
-        super(message);
-        this.name = 'CookieNotFound';
-      }
-    }
     vi.spyOn(shopify.auth, 'callback').mockRejectedValueOnce(new CookieNotFound('Could not find session cookie'));
 
     const req = {
@@ -221,12 +217,6 @@ describe('controllers/OAuthController', () => {
       new CustomSessionStorage()
     );
 
-    class InvalidOAuthError extends Error {
-      constructor(message) {
-        super(message);
-        this.name = 'InvalidOAuthError';
-      }
-    }
     vi.spyOn(shopify.auth, 'callback').mockRejectedValueOnce(new InvalidOAuthError('Validation failed'));
 
     const req = {
@@ -243,6 +233,35 @@ describe('controllers/OAuthController', () => {
     expect(res.status).toHaveBeenCalledWith(403);
     expect(res.json).toHaveBeenCalledWith({ error: 'OAuth callback validation failed: Validation failed' });
   });
+
+  it('should return 500 on generic token exchange failure', async () => {
+    const shopify = initShopify(
+      {
+        apiKey: 'test_key',
+        apiSecretKey: 'test_secret',
+        scopes: 'read_products',
+        host: 'https://test-app.myshopify.com',
+        appSlug: 'test-app'
+      },
+      new CustomSessionStorage()
+    );
+
+    vi.spyOn(shopify.auth, 'callback').mockRejectedValueOnce(new Error('Generic failure'));
+
+    const req = {
+      query: { shop: 'my-shop.myshopify.com' }
+    };
+    const res = {
+      redirect: vi.fn().mockReturnThis(),
+      status: vi.fn().mockReturnThis(),
+      json: vi.fn().mockReturnThis()
+    };
+
+    await handleCallback(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ error: 'Token exchange failed: Generic failure' });
+  });
 });
 
 describe('controllers/OAuthController - handleRoot', () => {
@@ -257,6 +276,7 @@ describe('controllers/OAuthController - handleRoot', () => {
     process.env.SHOPIFY_SCOPES = 'read_products';
     process.env.HOST = 'https://test-app.myshopify.com';
     process.env.APP_SLUG = 'test-app';
+    process.env.ENCRYPTION_KEY = 'a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6a7b8c9d0e1f2a3b4c5d6a7b8c9d0e1f2';
 
     initShopify(
       {
