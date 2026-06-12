@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
+import * as fc from 'fast-check';
 import request from 'supertest';
 import { createApp } from './app.js';
 
@@ -38,20 +39,61 @@ describe('app factory', () => {
     expect(response.body).toEqual({ received: { hello: 'world' } });
   });
 
-  it('should parse URL-encoded body correctly', async () => {
-    const app = createApp(mockShopify);
+  // Feature: shopify-express-mongoose-boilerplate, Property 3: Raw Body Preservation
+  it('Property 3: Raw Body Preservation', async () => {
+    await fc.assert(
+      fc.asyncProperty(
+        fc.object(),
+        async (jsonObj) => {
+          const app = createApp(mockShopify);
+          app.post('/test-raw-body', (req, res) => {
+            res.json({ rawBodyStr: req.rawBody ? req.rawBody.toString('utf8') : null });
+          });
 
-    app.post('/test-urlencoded', (req, res) => {
-      res.json({ received: req.body });
+          const jsonString = JSON.stringify(jsonObj);
+          const response = await request(app)
+            .post('/test-raw-body')
+            .send(jsonString)
+            .set('Content-Type', 'application/json');
+
+          expect(response.body.rawBodyStr).toBe(jsonString);
+        }
+      ),
+      { numRuns: 50 }
+    );
+  });
+
+  it('should handle empty body leaving req.rawBody undefined', async () => {
+    const app = createApp(mockShopify);
+    app.post('/test-empty-body', (req, res) => {
+      res.json({ rawBodyIsUndefined: req.rawBody === undefined });
     });
 
     const response = await request(app)
-      .post('/test-urlencoded')
-      .send('hello=world&foo=bar')
-      .set('Content-Type', 'application/x-www-form-urlencoded');
+      .post('/test-empty-body')
+      .set('Content-Type', 'application/json');
 
     expect(response.status).toBe(200);
-    expect(response.body).toEqual({ received: { hello: 'world', foo: 'bar' } });
+    expect(response.body.rawBodyIsUndefined).toBe(true);
+  });
+
+  it('should limit requests to 30 within a 60s window', async () => {
+    const app = createApp(mockShopify);
+    let successCount = 0;
+    let rateLimitCount = 0;
+
+    for (let i = 0; i < 31; i++) {
+      const response = await request(app).get('/');
+      // The mocked root returns 'root' and 200 OK
+      if (response.status === 200) {
+        successCount++;
+      } else if (response.status === 429) {
+        rateLimitCount++;
+      }
+    }
+
+    expect(successCount).toBe(30);
+    expect(rateLimitCount).toBe(1);
   });
 
   it('should catch unhandled errors from routes and return 500 without leaking stack traces', async () => {

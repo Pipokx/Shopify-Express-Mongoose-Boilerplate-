@@ -114,3 +114,13 @@ Upon successful bootstrap, your console will print verification logs confirming 
 MongoDB connected
 Server listening on port 3000
 ```
+
+---
+
+## 🔒 GDPR Mandatory Webhooks
+
+To comply with Shopify's data protection requirements and pass App Store submission, you must implement and configure the following three mandatory GDPR webhook endpoints in your Partner Dashboard:
+
+- **`customers/data_request`**: Triggered when a store owner or customer requests to view the stored data associated with that customer. Your app must compile and deliver this data.
+- **`customers/redact`**: Triggered when a store owner or customer requests the deletion of customer data. Your app must scrub or anonymize all personal data associated with the customer from your database.
+- **`shop/redact`**: Triggered 48 hours after a store owner uninstalls your app. Your app must permanently delete all data associated with the store from your database.
