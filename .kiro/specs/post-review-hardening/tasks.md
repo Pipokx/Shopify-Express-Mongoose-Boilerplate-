@@ -6,8 +6,8 @@ Seven targeted security and reliability improvements applied in dependency order
 
 ## Tasks
 
-- [ ] 1. Fix instanceof error detection in OAuthController
-  - [ ] 1.1 Replace string-based error detection with instanceof checks
+- [x] 1. Fix instanceof error detection in OAuthController
+  - [x] 1.1 Replace string-based error detection with instanceof checks
     - Import `CookieNotFound` and `InvalidOAuthError` from `@shopify/shopify-api`
     - Replace `error.constructor.name === 'CookieNotFound'` with `error instanceof CookieNotFound`
     - Replace `error.constructor.name === 'InvalidOAuthError'` with `error instanceof InvalidOAuthError`
@@ -21,8 +21,8 @@ Seven targeted security and reliability improvements applied in dependency order
     - Test that an unknown error returns HTTP 500 generic message
     - _Requirements: 1.2, 1.3, 1.4_
 
-- [ ] 2. Implement AES-256-GCM encryption module
-  - [ ] 2.1 Create `src/storage/encryption.js` module
+- [x] 2. Implement AES-256-GCM encryption module
+  - [x] 2.1 Create `src/storage/encryption.js` module
     - Implement `encrypt(plaintext, hexKey)` using AES-256-GCM with 12-byte random IV
     - Implement `decrypt(encoded, hexKey)` that parses IV + authTag + ciphertext from base64
     - Use Node.js built-in `crypto` module
@@ -41,8 +41,8 @@ Seven targeted security and reliability improvements applied in dependency order
     - Extract first 12 bytes (IV) from each base64-decoded output and assert uniqueness
     - **Validates: Requirements 2.5**
 
-- [ ] 3. Add ENCRYPTION_KEY to environment validation
-  - [ ] 3.1 Update `src/config/env.js` to require ENCRYPTION_KEY
+- [x] 3. Add ENCRYPTION_KEY to environment validation
+  - [x] 3.1 Update `src/config/env.js` to require ENCRYPTION_KEY
     - Add `'ENCRYPTION_KEY'` to the `REQUIRED_VARS` array
     - Application will throw and exit if ENCRYPTION_KEY is missing at startup
     - _Requirements: 2.1, 2.2_
@@ -52,7 +52,7 @@ Seven targeted security and reliability improvements applied in dependency order
     - Test that a present ENCRYPTION_KEY allows boot to continue
     - _Requirements: 2.1, 2.2_
 
-- [ ] 4. Integrate encryption into CustomSessionStorage
+- [x] 4. Integrate encryption into CustomSessionStorage
   - [x] 4.1 Update `src/storage/CustomSessionStorage.js` with encrypt/decrypt
     - Import `encrypt` and `decrypt` from `./encryption.js`
     - In `storeSession`: encrypt `accessToken` if non-null before writing to MongoDB
@@ -67,10 +67,10 @@ Seven targeted security and reliability improvements applied in dependency order
     - Test that null/undefined accessToken passes through unchanged
     - _Requirements: 2.3, 2.4, 2.7_
 
-- [ ] 5. Checkpoint - Verify encryption pipeline
+- [x] 5. Checkpoint - Verify encryption pipeline
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 6. Add raw body capture in app.js
+- [x] 6. Add raw body capture in app.js
   - [x] 6.1 Configure express.json() verify callback in `src/app.js`
     - Add `verify: (req, res, buf, encoding) => { if (buf && buf.length > 0) req.rawBody = buf; }` option to `express.json()`
     - Remove standalone `app.use(express.urlencoded(...))` if redundant or keep if needed for form data
@@ -86,8 +86,8 @@ Seven targeted security and reliability improvements applied in dependency order
     - Test that a request with no body leaves `req.rawBody` undefined
     - _Requirements: 3.3_
 
-- [ ] 7. Add TTL index on Session expires field
-  - [ ] 7.1 Update `src/models/Session.js` with TTL index
+- [x] 7. Add TTL index on Session expires field
+  - [x] 7.1 Update `src/models/Session.js` with TTL index
     - Add `SessionSchema.index({ expires: 1 }, { expireAfterSeconds: 0 })` after schema definition
     - This enables MongoDB automatic deletion of expired session documents
     - _Requirements: 4.1, 4.2_
@@ -96,7 +96,7 @@ Seven targeted security and reliability improvements applied in dependency order
     - Assert that the Session schema indexes include `expires` with `expireAfterSeconds: 0`
     - _Requirements: 4.1_
 
-- [ ] 8. Add rate limiting with express-rate-limit
+- [x] 8. Add rate limiting with express-rate-limit
   - [x] 8.1 Install `express-rate-limit` and configure limiter in `src/app.js`
     - Add `express-rate-limit` to dependencies in `package.json`
     - Import `rateLimit` from `express-rate-limit`
@@ -109,7 +109,7 @@ Seven targeted security and reliability improvements applied in dependency order
     - Test that requests within limit return normal responses
     - _Requirements: 5.3, 5.4_
 
-- [ ] 9. Implement validateSessionToken middleware
+- [x] 9. Implement validateSessionToken middleware
   - [x] 9.1 Create `src/middleware/validateSessionToken.js`
     - Export `validateSessionToken` async middleware function
     - Extract Bearer token from `Authorization` header
@@ -132,10 +132,10 @@ Seven targeted security and reliability improvements applied in dependency order
     - Mock `shopify.session.decodeSessionToken` to reject with varied errors
     - **Validates: Requirements 6.4**
 
-- [ ] 10. Checkpoint - Verify all middleware and security features
+- [x] 10. Checkpoint - Verify all middleware and security features
   - Ensure all tests pass, ask the user if questions arise.
 
-- [ ] 11. Add GDPR webhook documentation to README
+- [x] 11. Add GDPR webhook documentation to README
   - [x] 11.1 Add GDPR Mandatory Webhooks section to `README.md`
     - Add a new section documenting the three mandatory GDPR webhook endpoints
     - Document `customers/data_request`: purpose and expected behavior
@@ -144,7 +144,7 @@ Seven targeted security and reliability improvements applied in dependency order
     - Note that these endpoints are required for Shopify App Store submission
     - _Requirements: 7.1, 7.2, 7.3_
 
-- [ ] 12. Final checkpoint - Full test suite verification
+- [x] 12. Final checkpoint - Full test suite verification
   - Ensure all tests pass, ask the user if questions arise.
 
 ## Notes
