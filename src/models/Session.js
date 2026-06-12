@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import { encrypt, decrypt } from '../utils/encryption.js';
 
 const SessionSchema = new mongoose.Schema(
   {
@@ -28,23 +27,7 @@ const SessionSchema = new mongoose.Schema(
       index: { expires: 0 }
     },
     accessToken: {
-      type: String,
-      set: (val) => {
-        if (!val) return val;
-        const key = process.env.ENCRYPTION_KEY;
-        if (!key || !/^[0-9a-fA-F]{64}$/.test(key)) {
-          throw new Error('ENCRYPTION_KEY must be configured as a 64-character hex string.');
-        }
-        return encrypt(val, key);
-      },
-      get: (val) => {
-        if (!val) return val;
-        const key = process.env.ENCRYPTION_KEY;
-        if (!key || !/^[0-9a-fA-F]{64}$/.test(key)) {
-          throw new Error('ENCRYPTION_KEY must be configured as a 64-character hex string.');
-        }
-        return decrypt(val, key);
-      }
+      type: String
     },
     onlineAccessInfo: {
       type: mongoose.Schema.Types.Mixed

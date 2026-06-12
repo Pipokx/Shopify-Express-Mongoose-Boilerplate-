@@ -1,5 +1,6 @@
 import { Session } from '@shopify/shopify-api';
 import { SessionModel } from '../models/Session.js';
+import { encrypt, decrypt } from '../utils/encryption.js';
 
 /**
  * Custom session storage for Shopify SDK backed by MongoDB / Mongoose.
@@ -19,7 +20,7 @@ export class CustomSessionStorage {
       isOnline: session.isOnline,
       scope: session.scope,
       expires: session.expires ? new Date(session.expires) : undefined,
-      accessToken: session.accessToken,
+      accessToken: session.accessToken ? encrypt(session.accessToken, process.env.ENCRYPTION_KEY) : session.accessToken,
       onlineAccessInfo: session.onlineAccessInfo
     };
 
@@ -53,7 +54,7 @@ export class CustomSessionStorage {
       isOnline: doc.isOnline,
       scope: doc.scope,
       expires: expires,
-      accessToken: doc.accessToken,
+      accessToken: doc.accessToken ? decrypt(doc.accessToken, process.env.ENCRYPTION_KEY) : doc.accessToken,
       onlineAccessInfo: doc.onlineAccessInfo
     });
   }

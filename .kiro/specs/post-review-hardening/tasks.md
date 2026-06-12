@@ -15,7 +15,7 @@ Seven targeted security and reliability improvements applied in dependency order
     - Preserve existing recovery flows (iframe breakout for CookieNotFound, 403 for InvalidOAuthError)
     - _Requirements: 1.1, 1.2, 1.3, 1.4_
 
-  - [ ]* 1.2 Write unit tests for instanceof error branching
+  - [x]* 1.2 Write unit tests for instanceof error branching
     - Test that a thrown `CookieNotFound` instance triggers the iframe breakout redirect
     - Test that a thrown `InvalidOAuthError` instance returns HTTP 403
     - Test that an unknown error returns HTTP 500 generic message
@@ -29,13 +29,13 @@ Seven targeted security and reliability improvements applied in dependency order
     - Output format: base64(IV 12B || authTag 16B || ciphertext)
     - _Requirements: 2.3, 2.4, 2.5, 2.6_
 
-  - [ ]* 2.2 Write property test for encryption round-trip
+  - [x]* 2.2 Write property test for encryption round-trip
     - **Property 1: Encryption Round-Trip Preserves AccessToken**
     - For any arbitrary non-empty string and valid 32-byte hex key, `decrypt(encrypt(s, k), k) === s`
     - Use `fc.string({ minLength: 1 })` for plaintext, fixed valid hex key
     - **Validates: Requirements 2.3, 2.4, 2.6**
 
-  - [ ]* 2.3 Write property test for IV uniqueness
+  - [x]* 2.3 Write property test for IV uniqueness
     - **Property 2: Unique IV Per Encryption Operation**
     - For any plaintext and key, encrypting the same value N times produces N distinct IVs
     - Extract first 12 bytes (IV) from each base64-decoded output and assert uniqueness
@@ -47,13 +47,13 @@ Seven targeted security and reliability improvements applied in dependency order
     - Application will throw and exit if ENCRYPTION_KEY is missing at startup
     - _Requirements: 2.1, 2.2_
 
-  - [ ]* 3.2 Write unit tests for ENCRYPTION_KEY validation
+  - [x]* 3.2 Write unit tests for ENCRYPTION_KEY validation
     - Test that missing ENCRYPTION_KEY throws an error
     - Test that a present ENCRYPTION_KEY allows boot to continue
     - _Requirements: 2.1, 2.2_
 
 - [ ] 4. Integrate encryption into CustomSessionStorage
-  - [ ] 4.1 Update `src/storage/CustomSessionStorage.js` with encrypt/decrypt
+  - [x] 4.1 Update `src/storage/CustomSessionStorage.js` with encrypt/decrypt
     - Import `encrypt` and `decrypt` from `./encryption.js`
     - In `storeSession`: encrypt `accessToken` if non-null before writing to MongoDB
     - In `loadSession`: decrypt `accessToken` if non-null after reading from MongoDB
@@ -61,7 +61,7 @@ Seven targeted security and reliability improvements applied in dependency order
     - Read `ENCRYPTION_KEY` from `process.env.ENCRYPTION_KEY`
     - _Requirements: 2.3, 2.4, 2.5, 2.6, 2.7_
 
-  - [ ]* 4.2 Write unit tests for CustomSessionStorage encryption integration
+  - [x]* 4.2 Write unit tests for CustomSessionStorage encryption integration
     - Test that storeSession writes an encrypted (non-plaintext) accessToken to the DB
     - Test that loadSession returns the original plaintext accessToken
     - Test that null/undefined accessToken passes through unchanged
@@ -92,7 +92,7 @@ Seven targeted security and reliability improvements applied in dependency order
     - This enables MongoDB automatic deletion of expired session documents
     - _Requirements: 4.1, 4.2_
 
-  - [ ]* 7.2 Write unit test verifying TTL index definition
+  - [x]* 7.2 Write unit test verifying TTL index definition
     - Assert that the Session schema indexes include `expires` with `expireAfterSeconds: 0`
     - _Requirements: 4.1_
 

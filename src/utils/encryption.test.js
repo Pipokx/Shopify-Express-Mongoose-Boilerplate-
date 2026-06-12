@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import * as fc from 'fast-check';
 import { encrypt, decrypt } from './encryption.js';
 
 describe('utils/encryption', () => {
@@ -14,6 +15,34 @@ describe('utils/encryption', () => {
 
     const decrypted = decrypt(encrypted, SECRET_KEY);
     expect(decrypted).toBe(originalText);
+  });
+
+  it('Property 1: Encryption Round-Trip Preserves AccessToken', () => {
+    fc.assert(
+      fc.property(
+        fc.string({ minLength: 1 }),
+        (plaintext) => {
+          const encrypted = encrypt(plaintext, SECRET_KEY);
+          const decrypted = decrypt(encrypted, SECRET_KEY);
+          expect(decrypted).toBe(plaintext);
+        }
+      ),
+      { numRuns: 100 }
+    );
+  });
+
+  it('Property 2: Unique IV Per Encryption Operation', () => {
+    const originalText = 'constant_plaintext';
+    const N = 100;
+    const ivs = new Set();
+
+    for (let i = 0; i < N; i++) {
+      const encrypted = encrypt(originalText, SECRET_KEY);
+      const [iv, , ] = encrypted.split(':');
+      ivs.add(iv);
+    }
+
+    expect(ivs.size).toBe(N);
   });
 
   it('should return legacy plaintext as-is when format is not colon-separated', () => {
